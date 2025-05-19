@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hệ Thống Vai Trò Cộng Tác Viên Evoq</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    :root {
+      /* Evoq Finance Color Palette */
+      --black: #000000;
+      --electric-yellow: #FEFD95;
+      --white: #FFFFFF;
+      --sky-blue: #9EC2CF;
+      --sky-gray: #94A3B8;
+      --charcoal: #29292B;
+      
+      /* Additional UI Colors */
+      --black-80: rgba(0, 0, 0, 0.8);
+      --black-60: rgba(0, 0, 0, 0.6);
+      --glow: 0 0 15px rgba(254, 253, 149, 0.4);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--black);
+      color: var(--white);
+      line-height: 1.6;
+    }
+
+    .bg-gradient {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at top right, rgba(158, 194, 207, 0.2), transparent 70%),
+                 radial-gradient(circle at bottom left, rgba(254, 253, 149, 0.15), transparent 70%);
+      z-index: -1;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .logo {
+      font-size: 1.2rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      color: var(--electric-yellow);
+    }
+
+    h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      background: linear-gradient(90deg, var(--electric-yellow), var(--sky-blue));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      display: inline-block;
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      color: var(--sky-gray);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 40px;
+      border-bottom: 1px solid var(--charcoal);
+    }
+
+    .tab {
+      padding: 12px 24px;
+      margin: 0 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--sky-gray);
+      background: transparent;
+      border: none;
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .tab.active {
+      color: var(--electric-yellow);
+      border-bottom: 3px solid var(--electric-yellow);
+    }
+
+    .tab:hover:not(.active) {
+      color: var(--white);
+      border-bottom: 3px solid var(--sky-gray);
+    }
+
+    .role-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 30px;
+    }
+
+    .role-card {
+      background: var(--black-80);
+      border: 1px solid var(--charcoal);
+      border-radius: 12px;
+      padding: 30px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: row;
+    }
+
+    .role-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--glow);
+      border-color: var(--electric-yellow);
+    }
+
+    .role-left {
+      flex: 0 0 30%;
+      padding-right: 20px;
+      border-right: 1px solid var(--charcoal);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .role-right {
+      flex: 0 0 70%;
+      padding-left: 20px;
+    }
+
+    .role-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .role-icon {
+      font-size: 1.6rem;
+      margin-right: 15px;
+      background: var(--black-60);
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+    }
+
+    .role-level {
+      background-color: var(--charcoal);
+      padding: 4px 10px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border-radius: 20px;
+      color: var(--electric-yellow);
+      display: inline-block;
+      margin-top: 10px;
+    }
+
+    .role-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+      color: var(--white);
+    }
+
+    .role-description {
+      font-size: 0.95rem;
+      color: var(--sky-gray);
+      margin-bottom: 20px;
+    }
+
+    .requirements-title {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--sky-blue);
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .requirements-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .requirements-list li {
+      position: relative;
+      padding-left: 20px;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+      color: var(--white);
+    }
+
+    .requirements-list li::before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: var(--electric-yellow);
+    }
+
+    .progress-bar {
+      height: 6px;
+      background-color: var(--charcoal);
+      border-radius: 3px;
+      margin-top: 20px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 3px;
+      background: linear-gradient(90deg, var(--electric-yellow), var(--sky-blue));
+      transition: width 0.5s ease;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 80px;
+      padding-top: 30px;
+      border-top: 1px solid var(--charcoal);
+      color: var(--sky-gray);
+      font-size: 0.9rem;
+    }
+
+    .footer a {
+      color: var(--electric-yellow);
+      text-decoration: none;
+    }
+
+    @media (max-width: 1000px) {
+      .role-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .role-card {
+        flex-direction: column;
+      }
+      
+      .role-left {
+        border-right: none;
+        border-bottom: 1px solid var(--charcoal);
+        padding-right: 0;
+        padding-bottom: 20px;
+        margin-bottom: 20px;
+      }
+      
+      .role-right {
+        padding-left: 0;
+      }
+      
+      .tabs {
+        overflow-x: auto;
+        white-space: nowrap;
+        padding-bottom: 10px;
+      }
+      
+      h1 {
+        font-size: 2.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-gradient"></div>
+  <div class="container">
+    <header>
+      <div class="logo">Evoq Finance</div>
+      <h1>Hệ Thống Vai Trò Cộng Tác Viên</h1>
+      <p class="subtitle">Mở khóa các vai trò độc quyền bằng cách đóng góp cho hệ sinh thái Evoq. Tiến triển qua các cấp độ khi bạn tham gia và tạo giá trị cho cộng đồng của chúng tôi.</p>
+    </header>
+
+    <div class="role-grid">
+      <!-- Vai trò theo cấp độ tham gia -->
+      <div class="role-card">
+        <div class="role-left">
+          <div class="role-icon">🌱</div>
+          <div class="role-title">@Evoq Recruit</div>
+          <div class="role-level">Cấp 5</div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 25%;"></div>
+          </div>
+        </div>
+        <div class="role-right">
+          <div class="role-description">
+            Điểm khởi đầu cho hành trình Evoq của bạn. Recruits là nền tảng của cộng đồng chúng tôi và là bước đầu tiên để trở thành một cộng tác viên có ảnh hưởng.
+          </div>
+          <div class="requirements-title">Làm thế nào để đạt được</div>
+          <ul class="requirements-list">
+            <li>Tham gia sự kiện AMA đầu tiên của bạn</li>
+            <li>Chia sẻ meme đầu tiên trong #meme-factory</li>
+            <li>Giúp trả lời câu hỏi cộng đồng</li>
+            <li>Đạt Cấp 5 trong Discord XP</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="role-card">
+        <div class="role-left">
+          <div class="role-icon">⚔️</div>
+          <div class="role-title">@Evoq Elite</div>
+          <div class="role-level">Cấp 10</div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 50%;"></div>
+          </div>
+        </div>
+        <div class="role-right">
+          <div class="role-description">
+            Thành viên cộng đồng tích cực thường xuyên đóng góp những hiểu biết giá trị và giúp duy trì môi trường tích cực cho tất cả người tham gia Evoq.
+          </div>
+          <div class="requirements-title">Làm thế nào để đạt được</div>
+          <ul class="requirements-list">
+            <li>Hoạt động liên tục 2+ tuần</li>
+            <li>Giúp đỡ ít nhất 5 người mới</li>
+            <li>Tạo nội dung giáo dục</li>
+            <li>Đạt Cấp 10 trong Discord XP</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="role-card">
+        <div class="role-left">
+          <div class="role-icon">👑</div>
+          <div class="role-title">@Evoq Alpha</div>
+          <div class="role-level">Cấp 20</div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 100%;"></div>
+          </div>
+        </div>
+        <div class="role-right">
+          <div class="role-description">
+            Cộng tác viên hàng đầu dẫn dắt các cuộc thảo luận, hướng dẫn cộng đồng và tạo tác động đáng kể đến sự phát triển của Evoq thông qua sự cống hiến và chuyên môn của họ.
+          </div>
+          <div class="requirements-title">Làm thế nào để đạt được</div>
+          <ul class="requirements-list">
+            <li>Dẫn dắt các sáng kiến cộng đồng</li>
+            <li>Cố vấn cho các thành viên khác</li>
+            <li>Đóng góp vào phát triển hệ sinh thái</li>
+            <li>Đạt Cấp 20 trong Discord XP</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Vai trò chat -->
+      <div class="role-card">
+        <div class="role-left">
+          <div class="role-icon">🌿</div>
+          <div class="role-title">@Yield Sprout</div>
+          <div class="role-level">Cấp 10</div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 50%;"></div>
+          </div>
+        </div>
+        <div class="role-right">
+          <div class="role-description">
+            Những người tham gia tích cực vào các cuộc trò chuyện, đóng góp ý kiến và khuyến khích các cuộc thảo luận hữu ích trong cộng đồng Evoq.
+          </div>
+          <div class="requirements-title">Làm thế nào để đạt được</div>
+          <ul class="requirements-list">
+            <li>Đạt số lượng yaps cần thiết</li>
+            <li>Tham gia vào các kênh thảo luận</li>
+            <li>Được gán tự động dựa trên hoạt động</li>
+            <li>Đạt Cấp 10 trong Discord XP</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="role-card">
+        <div class="role-left">
+          <div class="role-icon">🍲</div>
+          <div class="role-title">@Liquidity Chef</div>
+          <div class="role-level">Cấp 15</div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 75%;"></div>
+          </div>
+        </div>
+        <div class="role-right">
+          <div class="role-description">
+            Những chuyên gia về thanh khoản, chia sẻ kiến thức và hiểu biết sâu sắc về cung cấp thanh khoản và các chiến lược DeFi trong hệ sinh thái Evoq.
+          </div>
+          <div class="requirements-title">Làm thế nào để đạt được</div>
+          <ul class="requirements-list">
+            <li>Đạt cấp độ yaps cao hơn</li>
+            <li>Đóng góp kiến thức về thanh khoản</li>
+            <li>Được gán tự động dựa trên hoạt động</li>
+            <li>Đạt Cấp 15 trong Discord XP</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="role-card">
+        <div class="role-left">
+          <div class="role-icon">🏰</div>
+          <div class="role-title">@Evoq Baron</div>
+          <div class="role-level">Cấp 20</div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 80%;"></div>
+          </div>
+        </div>
+        <div class="role-right">
+          <div class="role-description">
+            Những người có ảnh hưởng trong cộng đồng, dẫn dắt các cuộc trò chuyện và thường xuyên đóng góp nội dung chất lượng cao vào các kênh thảo luận.
+          </div>
+          <div class="requirements-title">Làm thế nào để đạt được</div>
+          <ul class="requirements-list">
+            <li>Đạt số lượng yaps cấp cao</li>
+            <li>Thường xuyên tạo nội dung chất lượng</li>
+            <li>Được gán tự động dựa trên hoạt động</li>
+            <li>Đạt Cấp 20 trong Discord XP</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="role-card">
+        <div class="role-left">
+          <div class="role-icon">👑</div>
+          <div class="role-title">@Lend God</div>
+          <div class="role-level">Cấp 30</div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 100%;"></div>
+          </div>
+        </div>
+        <div class="role-right">
+          <div class="role-description">
+            Những chuyên gia hàng đầu về cho vay và đi vay trong DeFi, chia sẻ hiểu biết sâu sắc và hướng dẫn cộng đồng về các chiến lược tài chính tiên tiến.
+          </div>
+          <div class="requirements-title">Làm thế nào để đạt được</div>
+          <ul class="requirements-list">
+            <li>Đạt cấp độ yaps cao nhất</li>
+            <li>Đóng góp liên tục kiến thức chuyên sâu</li>
+            <li>Được gán tự động dựa trên hoạt động</li>
+            <li>Đạt Cấp 30 trong Discord XP</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Vai trò gaming -->
+      <div class="role-card">
+        <div class="role-left">
+          <div class="role-icon">🎮</div>
+          <div class="role-title">@Gamevoqer</div>
+          <div class="role-level">Chiến thắng đầu</div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 25%;"></div>
+          </div>
+        </div>
+        <div class="role-right">
+          <div class="role-description">
+            Những người chơi đã giành được chiến thắng đầu tiên trong các trò chơi cộng đồng Evoq, bắt đầu hành trình gaming của họ trong hệ sinh thái.
+          </div>
+          <div class="requirements-title">Làm thế nào để đạt được</div>
+          <ul class="requirements-list">
+            <li>Giành chiến thắng đầu tiên trong trò chơi Discord</li>
+            <li>Tham gia các sự kiện game cộng đồng</li>
+            <li>Được gán bởi quản trị viên</li>
+            <li>Theo dõi tiến độ trong #game-stats</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="role-card">
+        <div class="role-left">
+          <div class="role-icon">🎵</div>
+          <div class="role-title">@Vibevoqer</div>
+          <div class="role-level">5 Chiến thắng</div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 40%;"></div>
+          </div>
+        </div>
+        <div class="role-right">
+          <div class="role-description">
+            Những người chơi nhiệt tình đã chứng minh kỹ năng của họ bằng cách giành được nhiều chiến thắng trong các trò chơi cộng đồng Evoq.
+          </div>
+          <div class="requirements-title">Làm thế nào để đạt được</div>
+          <ul class="requirements-list">
+            <li>Giành 5 chiến thắng trong trò chơi Discord</li>
+            <li>Tham gia thường xuyên vào các sự kiện game</li>
+            <li>Được gán bởi quản trị viên</li>
+            <li>Theo dõi tiến độ trong #game-stats</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="role-card">
+        <div class="role-left">
+          <div class="role-icon">🕹️</div>
+          <div class="role-title">@Primevoqer</div>
+          <div class="role-level">15 Chiến thắng</div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 60%;"></div>
+          </div>
+        </div>
+        <div class="role-right">
+          <div class="role-description">
+            Những người đam mê game nổi bật trong các trò chơi và cuộc thi của cộng đồng Evoq, thể hiện kỹ năng và tư duy chiến lược qua nhiều thử thách.
+          </div>
+          <div class="requirements-title">Làm thế nào để đạt được</div>
+          <ul class="requirements-list">
+            <li>Thắng 15 trò chơi Discord Evoq</li>
+            <li>Tham gia 30+ trò chơi cộng đồng</li>
+            <li>Tổ chức ít nhất 1 trò chơi cộng đồng</li>
+            <li>Theo dõi tiến độ trong #game-stats</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="role-card">
+        <div class="role-left">
+          <div class="role-icon">👑</div>
+          <div class="role-title">@Evoq Overlord</div>
+          <div class="role-level">30 Chiến thắng</div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 100%;"></div>
+          </div>
+        </div>
+        <div class="role-right">
+          <div class="role-description">
+            Những bậc thầy không thể chối cãi của các trò chơi cộng đồng Evoq, đã chứng minh sự thống trị với số lượng chiến thắng ấn tượng và kỹ năng tuyệt vời.
+          </div>
+          <div class="requirements-title">Làm thế nào để đạt được</div>
+          <ul class="requirements-list">
+            <li>Thắng 30 trò chơi Discord Evoq</li>
+            <li>Trở thành huyền thoại trong cộng đồng game</li>
+            <li>Tổ chức và hỗ trợ các sự kiện game</li>
+            <li>Theo dõi tiến độ trong #game-stats</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Vai trò đặc biệt -->
+      <div class="role-card">
+        <div class="role-left">
+          <div class="role-icon">🏆</div>
+          <div class="role-title">@OGevoqer</div>
+          <div class="role-level">Di Sản</div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 100%;"></div>
+          </div>
+        </div>
+        <div class="role-right">
+          <div class="role-description">
+            Những người tiên phong đã hỗ trợ Evoq từ giai đoạn OpenBeta. Vai trò độc quyền này không thể đạt được nữa và đại diện cho những người tin tưởng sớm nhất vào dự án.
+          </div>
+          <div class="requirements-title">Cách đã đạt được</div>
+          <ul class="requirements-list">
+            <li>Tham gia trong giai đoạn OpenBeta</li>
+            <li>Đóng góp vào sự phát triển ban đầu</li>
+            <li>Không còn có thể đạt được</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="role-card">
+        <div class="role-left">
+          <div class="role-icon">🔥</div>
+          <div class="role-title">@Meme Lord</div>
+          <div class="role-level">Đặc Biệt</div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 75%;"></div>
+          </div>
+        </div>
+        <div class="role-right">
+          <div class="role-description">
+            Những người sáng tạo xuất sắc trong việc tạo ra các meme viral liên quan đến Evoq và giúp nâng cao nhận thức thương hiệu thông qua nội dung hài hước và hấp dẫn.
+          </div>
+          <div class="requirements-title">Làm thế nào để đạt được</div>
+          <ul class="requirements-list">
+            <li>Thắng cuộc thi meme hàng tuần</li>
+            <li>Tạo 3+ meme viral (50+ phản ứng)</li>
+            <li>Đăng nội dung chất lượng liên tục</li>
+            <li>Được trao bởi quản trị viên</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="role-card">
+        <div class="role-left">
+          <div class="role-icon">💡</div>
+          <div class="role-title">@Evoq Alchemist</div>
+          <div class="role-level">Đặc Biệt</div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 80%;"></div>
+          </div>
+        </div>
+        <div class="role-right">
+          <div class="role-description">
+            Những người chia sẻ kiến thức, biến các khái niệm phức tạp thành tài liệu giáo dục dễ tiếp cận, giúp cộng đồng hiểu về Evoq và hệ sinh thái của nó.
+          </div>
+          <div class="requirements-title">Làm thế nào để đạt được</div>
+          <ul class="requirements-list">
+            <li>Tạo các chủ đề giáo dục cao cấp</li>
+            <li>Phát triển infographics chi tiết</li>
+            <li>Viết giải thích kỹ thuật</li>
+            <li>Được trao bởi quản trị viên</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Vai trò khu vực -->
+      <div class="role-card">
+        <div class="role-left">
+          <div class="role-icon">🌍</div>
+          <div class="role-title">@CN / @VN / @ES</div>
+          <div class="role-level">Khu Vực</div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 100%;"></div>
+          </div>
+        </div>
+        <div class="role-right">
+          <div class="role-description">
+            Các vai trò khu vực kết nối các thành viên cộng đồng nói cùng ngôn ngữ hoặc đến từ cùng một khu vực, thúc đẩy các cuộc thảo luận và hỗ trợ địa phương.
+          </div>
+          <div class="requirements-title">Làm thế nào để đạt được</div>
+          <ul class="requirements-list">
+            <li>Tự gán trong #role-selection</li>
+            <li>Tham gia vào các kênh khu vực</li>
+            <li>Liên hệ quản trị viên cho khu vực mới</li>
+            <li>Giúp dịch thuật (tùy chọn)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>Để biết thêm thông tin về vai trò và lợi ích, hãy truy cập <a href="#">Tài liệu Evoq</a> hoặc hỏi trong <a href="#">#role-support</a></p>
+    </div>
+  </div>
+
+  <script>
+    // Chức năng tab đơn giản
+    const tabs = document.querySelectorAll('.tab');
+    
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        
+        // Trong triển khai thực tế, bạn sẽ lọc vai trò ở đây
+        // Đây chỉ là minh họa trực quan
+      });
+    });
+  </script>
+</body>
+</html>
